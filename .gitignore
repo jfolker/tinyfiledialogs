@@ -1,0 +1,16 @@
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+extras_dll_cs_lua_fortran/
+hello
+hello.exe
+hello_wchar_t
+hello_wchar_t.exe
+install_manifest.txt
+*.o
+*.a
+*.so
+*.lib
+*.dll
+*.core

@@ -45,6 +45,7 @@ misrepresented as being the original software.
 Thanks for contributions, bug corrections & thorough testing to:
 - Don Heyse http://ldglite.sf.net for bug corrections & thorough testing!
 - Paul Rouget
+- Jory Folker
 */
 
 
@@ -54,11 +55,42 @@ Thanks for contributions, bug corrections & thorough testing to:
 #endif
 #endif
 
-#if !defined(_WIN32) && ( defined(__GNUC__) || defined(__clang__) )
-#if !defined(_GNU_SOURCE)
- #define _GNU_SOURCE /* used only to resolve symbolic links. Can be commented out */
+/*
+Include stdlib with realpath(3) defined on POSIX platforms by exposing 
+the minimum necessary language extension set.
+*/
+#if !defined(_WIN32)
+  #if !defined(_GNU_SOURCE)
+    #if defined(__linux__) && ( defined(__GNUC__) || defined(__clang__) )
+      #define _GNU_SOURCE
+    #endif
+  #else
+    #if defined(__clang__)
+      #if _POSIX_C_SOURCE < 199506
+        #error "This compiler does not support the required 1995 or newer " \
+	  "POSIX C extensions."
+      #endif
+
+      #if !defined(__POSIX_VISIBLE)
+        #define __POSIX_VISIBLE 199506
+      #else
+        
+      #if __POSIX_VISIBLE < 199506
+        #error "__POSIX_VISIBLE was manually set to \"#__POSIX_VISIBLE\", " \
+	  "please set to at least 199506."
+      #endif
+    #endif
+  #endif
 #endif
-#endif
+
+/*
+  #if !defined(_GNU_SOURCE) && (!defined(__POSIX_VISIBLE) || __POSIX_VISIBLE < 199506)
+    #error "Required POSIX 1995 or GNU C language extensions are not supported\n" \
+      "by either this platform or compiler."
+  #endif
+*/
+
+#endif /*!defined(WIN32)*/
 
 #include <stdio.h>
 #include <stdlib.h>
