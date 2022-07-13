@@ -2,7 +2,6 @@ CMakeFiles/
 CMakeCache.txt
 Makefile
 cmake_install.cmake
-extras_dll_cs_lua_fortran/
 hello
 hello.exe
 hello_wchar_t

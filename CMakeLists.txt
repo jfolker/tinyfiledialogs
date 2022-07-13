@@ -20,7 +20,6 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     FRAMEWORK TRUE
     FRAMEWORK_VERSION C
     MACOSX_FRAMEWORK_IDENTIFIER com.cmake.tinyfiledialogs
-    MACOSX_FRAMEWORK_INFO_PLIST Info.plist
     # "current version" in semantic format in Mach-O binary file
     VERSION 16.4.0
     # "compatibility version" in semantic format in Mach-O binary file
