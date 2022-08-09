@@ -48,50 +48,6 @@ Thanks for contributions, bug corrections & thorough testing to:
 - Jory Folker
 */
 
-
-#ifndef __sun
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 2 /* to accept POSIX 2 in old ANSI C standards */
-#endif
-#endif
-
-/*
-Include stdlib with realpath(3) defined on POSIX platforms by exposing 
-the minimum necessary language extension set.
-*/
-#if !defined(_WIN32)
-  #if !defined(_GNU_SOURCE)
-    #if defined(__linux__) && ( defined(__GNUC__) || defined(__clang__) )
-      #define _GNU_SOURCE
-    #endif
-  #else
-    #if defined(__clang__)
-      #if _POSIX_C_SOURCE < 199506
-        #error "This compiler does not support the required 1995 or newer " \
-	  "POSIX C extensions."
-      #endif
-
-      #if !defined(__POSIX_VISIBLE)
-        #define __POSIX_VISIBLE 199506
-      #else
-        
-      #if __POSIX_VISIBLE < 199506
-        #error "__POSIX_VISIBLE was manually set to \"#__POSIX_VISIBLE\", " \
-	  "please set to at least 199506."
-      #endif
-    #endif
-  #endif
-#endif
-
-/*
-  #if !defined(_GNU_SOURCE) && (!defined(__POSIX_VISIBLE) || __POSIX_VISIBLE < 199506)
-    #error "Required POSIX 1995 or GNU C language extensions are not supported\n" \
-      "by either this platform or compiler."
-  #endif
-*/
-
-#endif /*!defined(WIN32)*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -3287,40 +3243,19 @@ static int detectPresence( char const * aExecutable )
    char lBuff[MAX_PATH_OR_CMD] ;
    char lTestedString[MAX_PATH_OR_CMD] = "which " ;
    FILE * lIn ;
-#ifdef _GNU_SOURCE
-   char* lAllocatedCharString;
-   int lSubstringUndetected;
-#endif
+   int result = 0;
 
    strcat( lTestedString , aExecutable ) ;
    strcat( lTestedString, " 2>/dev/null ");
    lIn = popen( lTestedString , "r" ) ;
    if ( ( fgets( lBuff , sizeof( lBuff ) , lIn ) != NULL )
     && ( ! strchr( lBuff , ':' ) ) && ( strncmp(lBuff, "no ", 3) ) )
-   {   /* present */
-      pclose( lIn ) ;
-
-#ifdef _GNU_SOURCE /*to bypass this, just comment out "#define _GNU_SOURCE" at the top of the file*/
-      if ( lBuff[strlen( lBuff ) -1] == '\n' ) lBuff[strlen( lBuff ) -1] = '\0' ;
-      lAllocatedCharString = realpath(lBuff,NULL); /*same as canonicalize_file_name*/
-      lSubstringUndetected = ! strstr(lAllocatedCharString, aExecutable);
-      free(lAllocatedCharString);
-      if (lSubstringUndetected)
-      {
-         if (tinyfd_verbose) printf("detectPresence %s %d\n", aExecutable, 0);
-         return 0;
-      }
-#endif /*_GNU_SOURCE*/
-
-      if (tinyfd_verbose) printf("detectPresence %s %d\n", aExecutable, 1);
-      return 1 ;
-   }
-   else
    {
-      pclose( lIn ) ;
-      if (tinyfd_verbose) printf("detectPresence %s %d\n", aExecutable, 0);
-      return 0 ;
+      result = 1; /* present */
    }
+   pclose(lIn);
+   if (tinyfd_verbose) printf("detectPresence %s %d\n", aExecutable, 1);
+   return result;
 }
 
 
