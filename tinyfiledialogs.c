@@ -48,6 +48,13 @@ Thanks for contributions, bug corrections & thorough testing to:
 - Jory Folker
 */
 
+
+#ifndef __sun
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 2 /* to accept POSIX 2 in old ANSI C standards */
+#endif
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
