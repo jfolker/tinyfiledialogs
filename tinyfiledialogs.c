@@ -64,7 +64,7 @@ Thanks for contributions, bug corrections & thorough testing to:
  #define SLASH "\\"
 #else
  #ifndef _POSIX_C_SOURCE
- #define _POSIX_C_SOURCE 200101
+ #define _POSIX_C_SOURCE 200112L
  #endif
  #include <limits.h>
  #include <unistd.h>
