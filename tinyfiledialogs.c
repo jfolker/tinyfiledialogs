@@ -48,12 +48,6 @@ Thanks for contributions, bug corrections & thorough testing to:
 - Jory Folker
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <sys/stat.h>
-
 #ifdef _WIN32
  #ifdef __BORLANDC__
   #define _getch getch
@@ -69,6 +63,9 @@ Thanks for contributions, bug corrections & thorough testing to:
  #define TINYFD_NOCCSUNICODE
  #define SLASH "\\"
 #else
+ #ifndef _POSIX_C_SOURCE
+ #define _POSIX_C_SOURCE 200101
+ #endif
  #include <limits.h>
  #include <unistd.h>
  #include <dirent.h> /* on old systems try <sys/dir.h> instead */
@@ -77,6 +74,12 @@ Thanks for contributions, bug corrections & thorough testing to:
  #include <signal.h> /* on old systems try <sys/signal.h> instead */
  #define SLASH "/"
 #endif /* _WIN32 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <sys/stat.h>
 
 #include "tinyfiledialogs.h"
 
